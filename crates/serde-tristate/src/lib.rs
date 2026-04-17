@@ -22,9 +22,11 @@ pub use serde_tristate_macros::serde_tristate;
 /// }
 /// ```
 ///
+#[derive(Default)]
 pub enum Tristate<T> {
     Value(T),
     None,
+    #[default]
     Undefined,
 }
 
@@ -42,11 +44,6 @@ impl<T> Tristate<T> {
     }
 }
 
-impl<T> Default for Tristate<T> {
-    fn default() -> Self {
-        Tristate::Undefined
-    }
-}
 
 impl<T> From<T> for Tristate<T> {
     fn from(v: T) -> Self {
@@ -73,9 +70,9 @@ impl<T> From<Option<Option<T>>> for Tristate<T> {
     }
 }
 
-impl<T> Into<Option<Option<T>>> for Tristate<T> {
-    fn into(self) -> Option<Option<T>> {
-        match self {
+impl<T> From<Tristate<T>> for Option<Option<T>> {
+    fn from(val: Tristate<T>) -> Self {
+        match val {
             Tristate::Undefined => None,
             Tristate::None => Some(None),
             Tristate::Value(v) => Some(Some(v)),
