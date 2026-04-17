@@ -100,7 +100,7 @@ let p: Tristate<i32> = 42.into();               // Tristate::Value(42)
 let p: Tristate<i32> = Some(42).into();         // Tristate::Value(42)
 let p: Tristate<i32> = Option::<i32>::None.into(); // Tristate::None
 
-p.into_option(); // Undefined→None, None→Some(None), Value(v)→Some(Some(v))
+let opt: Option<Option<i32>> = p.into(); // Undefined→None, None→Some(None), Value(v)→Some(Some(v))
 ```
 
 ### Combinators
@@ -116,7 +116,7 @@ patch.bio.and_then(|s| if s.is_empty() { Tristate::None } else { Tristate::Value
 ```rust
 let mut user = get_user_from_db();
 
-patch.name.apply_to(&mut user.name);           // required field
+patch.name.apply_to_tristate(&mut user.name);  // required field
 patch.bio.apply_to_option(&mut user.bio);      // Option<T> field
 ```
 
