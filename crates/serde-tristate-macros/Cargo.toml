@@ -1,0 +1,11 @@
+[package]
+name = "serde-tristate-macros"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Proc-macro internals for serde-tristate — do not use directly"
+
+[lib]
+proc-macro = true
