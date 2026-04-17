@@ -7,7 +7,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Mathys R. <mat.stjr@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/msjtr/serde-tristate"
+repository = "https://github.com/mstjr/serde-tristate"
 
 [workspace.dependencies]
 serde = "1"
