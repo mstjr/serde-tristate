@@ -44,7 +44,6 @@ impl<T> Tristate<T> {
     }
 }
 
-
 impl<T> From<T> for Tristate<T> {
     fn from(v: T) -> Self {
         Tristate::Value(v)
