@@ -154,6 +154,31 @@ impl<'de, T: Deserialize<'de>> Deserialize<'de> for Tristate<T> {
     }
 }
 
+#[cfg(feature = "utoipa")]
+impl<T> utoipa::PartialSchema for Tristate<T>
+where
+    T: utoipa::ToSchema,
+{
+    fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
+        use utoipa::openapi::schema::{ObjectBuilder, OneOfBuilder, SchemaType, Type};
+        use utoipa::openapi::RefOr;
+
+        // `Tristate<T>` serializes as:
+        //   - `Value(v)` => `v` (schema of `T`)
+        //   - `None`     => `null`
+        //   - `Undefined`=> field is omitted
+        // A field of this type should be optional (not `required`) so that
+        // `Undefined` is represented by absence. `oneOf` captures the two
+        // possible present values.
+        RefOr::T(
+            OneOfBuilder::new()
+                .item(T::schema())
+                .item(ObjectBuilder::new().schema_type(SchemaType::new(Type::Null)))
+                .into(),
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
