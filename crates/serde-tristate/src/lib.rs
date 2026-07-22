@@ -30,7 +30,7 @@ pub use serde_tristate_macros::serde_tristate;
         description = "Three-state value for HTTP PATCH request bodies. Null means the field is set as null and should be cleared. Undefined means the field is absent and should be left unchanged."
     )
 )]
-#[serde(untagged)]
+#[cfg_attr(feature = "utoipa", serde(untagged))]
 pub enum Tristate<T> {
     /// Field present with a value.
     #[cfg_attr(feature = "utoipa", schema(value_type = T))]
