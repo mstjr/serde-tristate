@@ -9,7 +9,7 @@ description = "Three-state Patch<T> for HTTP PATCH bodies with automatic serde i
 readme = "../../README.md"
 
 [features]
-default = ["macro"]
+default = ["macro", "utoipa"]
 macro = ["dep:serde-tristate-macros"]
 utoipa = ["dep:utoipa"]
 

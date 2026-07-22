@@ -23,9 +23,27 @@ pub use serde_tristate_macros::serde_tristate;
 /// ```
 ///
 #[derive(Default)]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(
+    feature = "utoipa",
+    schema(
+        description = "Three-state value for HTTP PATCH request bodies. Null means the field is set as null and should be cleared. Undefined means the field is absent and should be left unchanged."
+    )
+)]
+#[serde(untagged)]
 pub enum Tristate<T> {
+    /// Field present with a value.
+    #[cfg_attr(feature = "utoipa", schema(value_type = T))]
     Value(T),
+    /// Field present as JSON `null`.
+    #[cfg_attr(feature = "utoipa", schema(title = "null", rename = "null"))]
     None,
+    /// Field absent from the payload.
+
+    #[cfg_attr(
+        feature = "utoipa",
+        schema(title = "undefined", rename = "undefined", example = "undefined")
+    )]
     #[default]
     Undefined,
 }
@@ -151,31 +169,6 @@ impl<'de, T: Deserialize<'de>> Deserialize<'de> for Tristate<T> {
             Some(v) => Tristate::Value(v),
             None => Tristate::None,
         })
-    }
-}
-
-#[cfg(feature = "utoipa")]
-impl<T> utoipa::PartialSchema for Tristate<T>
-where
-    T: utoipa::ToSchema,
-{
-    fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
-        use utoipa::openapi::schema::{ObjectBuilder, OneOfBuilder, SchemaType, Type};
-        use utoipa::openapi::RefOr;
-
-        // `Tristate<T>` serializes as:
-        //   - `Value(v)` => `v` (schema of `T`)
-        //   - `None`     => `null`
-        //   - `Undefined`=> field is omitted
-        // A field of this type should be optional (not `required`) so that
-        // `Undefined` is represented by absence. `oneOf` captures the two
-        // possible present values.
-        RefOr::T(
-            OneOfBuilder::new()
-                .item(T::schema())
-                .item(ObjectBuilder::new().schema_type(SchemaType::new(Type::Null)))
-                .into(),
-        )
     }
 }
 
