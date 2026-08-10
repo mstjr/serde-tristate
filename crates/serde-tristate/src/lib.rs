@@ -22,7 +22,7 @@ pub use serde_tristate_macros::serde_tristate;
 /// }
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Clone, Copy, Debug, Hash, PartialEq, Eq)]
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
 #[cfg_attr(
     feature = "utoipa",
@@ -93,6 +93,16 @@ impl<T> From<Tristate<T>> for Option<Option<T>> {
             Tristate::Undefined => None,
             Tristate::None => Some(None),
             Tristate::Value(v) => Some(Some(v)),
+        }
+    }
+}
+
+impl<T> From<Tristate<T>> for Option<T> {
+    fn from(val: Tristate<T>) -> Self {
+        match val {
+            Tristate::Undefined => None,
+            Tristate::None => None,
+            Tristate::Value(v) => Some(v),
         }
     }
 }
