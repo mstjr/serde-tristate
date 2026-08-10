@@ -128,28 +128,28 @@ fn is_tristate_field(tokens: &[TokenTree]) -> bool {
 
     while i < tokens.len() {
         if !after_colon {
-            if let TokenTree::Punct(p) = &tokens[i] {
-                if p.as_char() == ':' {
-                    let next_is_colon = matches!(
-                        tokens.get(i + 1),
-                        Some(TokenTree::Punct(p2)) if p2.as_char() == ':'
-                    );
-                    if next_is_colon {
-                        i += 2; // skip `::`
-                        continue;
-                    }
-                    after_colon = true;
-                }
-            }
-        } else if let TokenTree::Ident(id) = &tokens[i] {
-            if id.to_string() == "Tristate" {
-                let next_is_lt = matches!(
+            if let TokenTree::Punct(p) = &tokens[i]
+                && p.as_char() == ':'
+            {
+                let next_is_colon = matches!(
                     tokens.get(i + 1),
-                    Some(TokenTree::Punct(p)) if p.as_char() == '<'
+                    Some(TokenTree::Punct(p2)) if p2.as_char() == ':'
                 );
-                if next_is_lt {
-                    return true;
+                if next_is_colon {
+                    i += 2; // skip `::`
+                    continue;
                 }
+                after_colon = true;
+            }
+        } else if let TokenTree::Ident(id) = &tokens[i]
+            && id.to_string() == "Tristate"
+        {
+            let next_is_lt = matches!(
+                tokens.get(i + 1),
+                Some(TokenTree::Punct(p)) if p.as_char() == '<'
+            );
+            if next_is_lt {
+                return true;
             }
         }
         i += 1;

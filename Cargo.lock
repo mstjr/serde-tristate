@@ -68,7 +68,7 @@ dependencies = [
 
 [[package]]
 name = "serde-tristate"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "serde",
  "serde-tristate-macros",
@@ -78,7 +78,7 @@ dependencies = [
 
 [[package]]
 name = "serde-tristate-macros"
-version = "0.1.4"
+version = "0.1.5"
 
 [[package]]
 name = "serde_core"
